@@ -1,0 +1,65 @@
+name: Publish
+
+# Releases are cut by pushing a version tag, so the published package is
+# always traceable to a commit:
+#
+#   git tag -a v0.1.0 -m "v0.1.0" && git push origin v0.1.0
+#
+# Authentication is npm trusted publishing over OIDC. There is no npm token in
+# this repo or in GitHub secrets: npm verifies the workflow identity instead,
+# which is why `id-token: write` below is load-bearing. Removing it turns every
+# release into an ENEEDAUTH failure.
+#
+# n8n requires community nodes submitted for verification to be published from
+# GitHub Actions with an npm provenance statement. `n8n-node release` detects
+# GitHub Actions, runs lint and build, then runs `npm publish` with
+# NPM_CONFIG_PROVENANCE=true.
+#
+# One-time setup on npmjs.com, package settings > Trusted Publishers:
+#   GitHub Actions, owner Ktemiaa, repository n8n-nodes-ktemia,
+#   workflow publish.yml, no environment.
+
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  publish:
+    name: Publish to npm
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # OIDC: how npm authenticates this workflow, and signs provenance
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      # No dependency cache: a release build should resolve from the lockfile
+      # rather than trust a cache that a previous run populated.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+
+      # Trusted publishing needs npm >= 11.5.1. Pinning the floor here means a
+      # runner image change cannot quietly drop OIDC support.
+      - name: Ensure npm supports OIDC
+        run: npm install -g npm@latest
+
+      - run: npm ci
+
+      - name: Assert the tag matches the package version
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          pkg="$(node -p 'require("./package.json").version')"
+          if [ "$tag" != "$pkg" ]; then
+            echo "tag $GITHUB_REF_NAME does not match package.json $pkg" >&2
+            exit 1
+          fi
+
+      # The tag says what to publish, but nothing has verified this commit yet
+      # if the tag was pushed without a prior CI run on main. Re-run the gate.
+      - name: Test
+        run: npm test
+
+      - name: Lint, build, and publish with provenance
+        run: npm run release

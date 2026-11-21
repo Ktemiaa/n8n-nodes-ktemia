@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# Cancel in-progress runs for the same branch or PR.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      # Builds, then runs the unit tests against dist/ with mocked HTTP.
+      - name: Build and test
+        run: npm test
+
+      - name: No runtime dependencies
+        run: |
+          deps="$(node -p 'Object.keys(require("./package.json").dependencies || {}).join(" ")')"
+          if [ -n "$deps" ]; then
+            echo "Verified community nodes cannot have runtime dependencies: $deps" >&2
+            exit 1
+          fi
+
+  # Checks every field and option the node offers against the live API spec.
+  # Advisory: it needs the network, and a spec change should be read by a
+  # person before the node follows it.
+  contract:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Contract check against https://www.ktemia.com/openapi.json
+        run: npm run test:contract

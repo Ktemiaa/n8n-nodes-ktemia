@@ -1,0 +1,63 @@
+{
+	"name": "n8n-nodes-ktemia",
+	"version": "0.1.0",
+	"description": "n8n node for the Ktemia travel search API: compare flight, hotel, and rental car prices across 100+ providers",
+	"license": "MIT",
+	"homepage": "https://www.ktemia.com",
+	"keywords": [
+		"n8n-community-node-package",
+		"n8n",
+		"ktemia",
+		"travel",
+		"flights",
+		"hotels",
+		"car-rental",
+		"price-comparison"
+	],
+	"author": {
+		"name": "Ktemia",
+		"email": "contact@ktemia.com",
+		"url": "https://www.ktemia.com"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Ktemiaa/n8n-nodes-ktemia.git"
+	},
+	"bugs": {
+		"url": "https://github.com/Ktemiaa/n8n-nodes-ktemia/issues"
+	},
+	"scripts": {
+		"build": "n8n-node build",
+		"build:watch": "tsc --watch",
+		"dev": "n8n-node dev",
+		"lint": "n8n-node lint",
+		"lint:fix": "n8n-node lint --fix",
+		"test": "npm run build && node --test test/unit/",
+		"test:contract": "npm run build && node --test test/contract/",
+		"release": "n8n-node release",
+		"prepublishOnly": "n8n-node prerelease"
+	},
+	"files": [
+		"dist"
+	],
+	"n8n": {
+		"n8nNodesApiVersion": 1,
+		"strict": true,
+		"credentials": [
+			"dist/credentials/KtemiaApi.credentials.js"
+		],
+		"nodes": [
+			"dist/nodes/Ktemia/Ktemia.node.js"
+		]
+	},
+	"devDependencies": {
+		"@n8n/node-cli": "^0.57.4",
+		"eslint": "9.32.0",
+		"prettier": "3.6.2",
+		"release-it": "^21.1.0",
+		"typescript": "5.9.2"
+	},
+	"peerDependencies": {
+		"n8n-workflow": "*"
+	}
+}
