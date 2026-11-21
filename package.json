@@ -32,8 +32,8 @@
 		"dev": "n8n-node dev",
 		"lint": "n8n-node lint",
 		"lint:fix": "n8n-node lint --fix",
-		"test": "npm run build && node --test test/unit/",
-		"test:contract": "npm run build && node --test test/contract/",
+		"test": "npm run build && node --test 'test/unit/*.test.js'",
+		"test:contract": "npm run build && node --test 'test/contract/*.test.js'",
 		"release": "n8n-node release",
 		"prepublishOnly": "n8n-node prerelease"
 	},
