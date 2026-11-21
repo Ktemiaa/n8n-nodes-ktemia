@@ -137,6 +137,15 @@ npm run test:contract  # check fields and options against the live OpenAPI spec
 KTEMIA_API_KEY=... node scripts/live-check.js  # real API, about 17 requests
 ```
 
+## Learn more
+
+- [Best Travel API in 2026: Access and Coverage](https://www.ktemia.com/blog/best-travel-api/)
+- [Flight Search API: Compare Fares for a Route](https://www.ktemia.com/blog/flight-search-api/)
+- [Hotel Price API: Every Booking Site in One Call](https://www.ktemia.com/blog/hotel-price-api/)
+- [Car Rental API: Compare Vehicles](https://www.ktemia.com/blog/car-rental-api/)
+- [How to Add a Flights MCP in Cursor or Claude](https://www.ktemia.com/blog/flights-mcp/)
+- [More on the Ktemia blog](https://www.ktemia.com/blog/)
+
 ## Resources
 
 - [Ktemia API documentation](https://www.ktemia.com/docs/api/)
