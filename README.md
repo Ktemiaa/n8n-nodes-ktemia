@@ -101,7 +101,7 @@ Every request except Get Key Status counts against the account's monthly quota. 
 |---|---|---|
 | Free | 100 | 2 |
 | Pro | 20,000 | 20 |
-| Business | 750,000 | 250 |
+| Business | 750,000 | 100 |
 
 See [pricing](https://www.ktemia.com/pricing/). Run **Account > Get Key Status** at any time to see what is left and when it resets.
 
