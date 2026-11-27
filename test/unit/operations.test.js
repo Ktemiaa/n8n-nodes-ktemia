@@ -291,9 +291,12 @@ describe('Hotel', () => {
 	});
 
 	it('Get Details sends the token and result ID', async () => {
+		// A real providerUrl is a Ktemia click link, resolved to the seller when
+		// the traveller opens it. The node must hand it on untouched.
+		const clickLink = 'https://api.ktemia.com/hotels/book?ref=eyJjIjoiVVMiLCJlIjoxNzk1fQ';
 		const { calls, json } = await run({
 			params: { resource: 'hotel', operation: 'getDetails', searchToken: 'tok', resultId: 'r9' },
-			responses: [{ body: { resultId: 'r9', bookingOptions: [{ providerUrl: 'https://example.com/x?a=1' }] } }],
+			responses: [{ body: { resultId: 'r9', bookingOptions: [{ providerUrl: clickLink }] } }],
 		});
 		assert.deepEqual(only(calls[0]), {
 			method: 'GET',
@@ -302,7 +305,7 @@ describe('Hotel', () => {
 			body: undefined,
 		});
 		// providerUrl is passed through exactly as the API gave it.
-		assert.equal(json[0].bookingOptions[0].providerUrl, 'https://example.com/x?a=1');
+		assert.equal(json[0].bookingOptions[0].providerUrl, clickLink);
 	});
 
 	it('Get Reviews joins list filters with commas and splits reviews into items', async () => {

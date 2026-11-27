@@ -136,6 +136,13 @@ function assert(condition, message) {
 		const { items } = await node({ resource: 'flight', operation: 'getDetails', searchToken: flight.searchToken, resultId: flight.id });
 		const option = items[0].bookingOptions?.[0];
 		assert(option && option.providerUrl, 'no providerUrl');
+		// The link has to be ours: it is resolved to the seller on the click,
+		// so a seller address here means details went back to fetching every
+		// option up front.
+		assert(
+			option.providerUrl.startsWith('https://api.ktemia.com/flights/book?ref='),
+			`providerUrl is not a Ktemia click link: ${option.providerUrl}`,
+		);
 		return `${items[0].bookingOptions.length} booking options`;
 	});
 

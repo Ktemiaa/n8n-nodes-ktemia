@@ -65,6 +65,7 @@ Tokens expire 60 minutes after the search starts.
 - **Dates cannot be in the past.** The node checks dates, codes, and counts before calling the API, so a typo fails without spending quota.
 - **Only the fields you set are sent.** Ktemia rejects unknown fields, and the node never fills in defaults on your behalf.
 - **Results are passed through unchanged**, including every `providerUrl`.
+- **`providerUrl` is a Ktemia link, not the seller's own address.** Opening it resolves the seller at that moment and answers a `302` to their booking page. Send it on unchanged — don't unwrap or rewrite it — and don't park it in a database: a link works for an hour, after which it reports `BOOKING_LINK_EXPIRED` and the search has to be run again. For a daily digest, send the link in the same run that produced it. `providerDomain`, when present, names the site the link lands on.
 
 ## Usage
 
